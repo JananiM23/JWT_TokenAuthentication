@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 
 const verifyToken = require('../middleware/authMiddlewares');
-const UserController = require('../Controllers/userController');
+const deviceController = require('../Controllers/deviceController');
 
-// router.get('/', verifyToken(), UserController.loginUser);
+router.post('/device', verifyToken, deviceController.deviceFlow);
 
 module.exports = router;

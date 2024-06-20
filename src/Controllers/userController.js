@@ -1,6 +1,7 @@
 const User = require('../models/userManagement');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const secret_key = '4xxXKNSH7hp3PKA0WtcU3TZDZNMcAnaD6FoXG39GLGM=';
 
 exports.registerUser = async (req, res) => {
     try {
@@ -34,7 +35,7 @@ exports.loginUser = async (req, res) => {
         }
 
         // here jwt involved when username and password authentication fine after pass with jwt token
-        const token = jwt.sign({ userId: user._id }, '6bZIP3Jz', { expiresIn: '1h' });
+        const token = jwt.sign({ userId: user._id }, secret_key, { expiresIn: '1h' });
 
         res.status(200).send({ message: 'user logged successfully', token });
     } catch (err) {
