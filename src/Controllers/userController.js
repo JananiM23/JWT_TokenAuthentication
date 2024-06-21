@@ -43,3 +43,36 @@ exports.loginUser = async (req, res) => {
         res.status(500).send({ message: 'Login failed'})
     }
 }
+
+// password change 
+exports.changePassword = async (req, res) => {
+    try {
+        const { oldPassword, newPassword, _id } = req.body;
+        const user = await User.findById(_id);
+
+        if (!user) {
+            return res.status(401).send({ message: "User not found! Please enter valid user credentials." });
+        }
+
+        // Compare oldPassword with user's current hashed password
+        const oldPasswordMatch = await bcrypt.compare(oldPassword, user.password);
+
+        if (!oldPasswordMatch) {
+            return res.status(401).send({ message: "Incorrect old password. Please enter valid password." });
+        }
+
+        // Generate salt and hash newPassword
+        const salt = await bcrypt.genSalt(10);
+        const hashedNewPassword = await bcrypt.hash(newPassword, salt);
+
+        // Update user's password
+        user.password = hashedNewPassword;
+        await user.save();
+
+        return res.status(200).send({ message: "User password updated successfully." });
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send({ message: "Something went wrong." });
+    }
+}
